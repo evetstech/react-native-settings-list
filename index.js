@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import {
   View,
-  TouchableHighlight,
+  TouchableOpacity,
   Text,
   StyleSheet,
   ScrollView,
@@ -28,10 +28,10 @@ class SettingsList extends React.Component {
   };
 
   static defaultProps ={
-    backgroundColor: 'white',
+    //backgroundColor: 'white', // Reduce overdraw
     borderColor: 'black',
     defaultItemSize: 50,
-    underlayColor: 'transparent',
+    //underlayColor: 'transparent', Reduce overdraw
     defaultTitleStyle: {fontSize: 16}
   };
 
@@ -152,7 +152,7 @@ class SettingsList extends React.Component {
               item.rightSideStyle ? item.rightSideStyle
               :
                 position === 'Bottom' ? null : styles.rightSide,
-                {color: '#B1B1B1'},
+                {color: '#B9B9B9'}, // Orig. #B1B1B1
               item.titleInfoStyle
             ]}>
             {item.titleInfo}
@@ -166,7 +166,7 @@ class SettingsList extends React.Component {
     if(item.borderHide) {
       switch(item.borderHide) {
         case 'Top' : border = {borderBottomWidth:1, borderColor: this.props.borderColor}; break;
-        case 'Bottom' : border = {borderTopWidth:1, borderColor: this.props.borderColor}; break;
+        case 'Bottom' : border = {borderTopWidth:1, borderColor: '#B9B9B9'}; break; // Orig this.props.borderColor
       }
     } else {
       border = index === max-1 ? {borderWidth:0} : {borderBottomWidth:1, borderColor: this.props.borderColor};
@@ -175,7 +175,7 @@ class SettingsList extends React.Component {
     let titleInfoPosition = item.titleInfoPosition ? item.titleInfoPosition : this.props.defaultTitleInfoPosition;
 
     return (
-      <TouchableHighlight accessible={false} key={'item_' + index} underlayColor={item.underlayColor ? item.underlayColor : this.props.underlayColor} onPress={item.onPress} onLongPress={item.onLongPress} ref={item.itemRef}>
+      <TouchableOpacity accessible={false} key={'item_' + index} underlayColor={item.underlayColor ? item.underlayColor : this.props.underlayColor} onPress={item.onPress} onLongPress={item.onLongPress}>
         <View style={item.itemBoxStyle ? item.itemBoxStyle : [styles.itemBox, {backgroundColor: item.backgroundColor ? item.backgroundColor : this.props.backgroundColor}]}>
           {item.icon}
           {item.isAuth ?
@@ -223,7 +223,7 @@ class SettingsList extends React.Component {
           </View>
         }
         </View>
-      </TouchableHighlight>
+      </TouchableOpacity>
     )
   }
 
