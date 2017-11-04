@@ -74,6 +74,7 @@ The following props are used:
 |-------------|-----------------------------------------|------------------------|
 | headerText  | Text for the header                     | React.PropTypes.string |
 | headerStyle | Sets border color for the settings list | Text.propTypes.style   |
+| headerRef   | Sets a `ref` on the header component    | React.PropTypes.func   |
 
 ### <a name='sli'>\<SettingsList.Item></a>
 The following props are used:
@@ -98,6 +99,7 @@ The following props are used:
 | isAuth              | Sets item as an authorization item                                                                       | React.PropTypes.bool   |
 | authPropsUser       | Changes the props for the first TextInput component; overwrites default                                  | React.PropTypes.node   |
 | authPropsPW         | Changes the props for the second TextInput component; overwrites default                                 | React.PropTypes.node   |
+| itemRef             | Sets a `ref` on the TouchableHighlight that SettingsList.Item renders to                                 | React.PropTypes.func   |
 
 ###### <a href='#top'>Top</a>
 

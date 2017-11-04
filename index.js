@@ -1,6 +1,7 @@
 'use strict'
 
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {
   View,
@@ -17,13 +18,13 @@ const ARROW_ICON = require('./img/icon-arrow-settings.png');
 
 class SettingsList extends React.Component {
   static propTypes = {
-    backgroundColor: React.PropTypes.string,
-    borderColor: React.PropTypes.string,
-    defaultItemSize: React.PropTypes.number,
-    underlayColor: React.PropTypes.string,
+    backgroundColor: PropTypes.string,
+    borderColor: PropTypes.string,
+    defaultItemSize: PropTypes.number,
+    underlayColor: PropTypes.string,
     defaultTitleStyle: Text.propTypes.style,
-    defaultTitleInfoPosition: React.PropTypes.string,
-    scrollViewProps: React.PropTypes.object,
+    defaultTitleInfoPosition: PropTypes.string,
+    scrollViewProps: PropTypes.object,
   };
 
   static defaultProps ={
@@ -70,7 +71,7 @@ class SettingsList extends React.Component {
 
   render(){
     return (
-      <ScrollView {...this.props.scrollViewProps}>
+      <ScrollView {...this.props.scrollViewProps} ref="_scrollView">
         {this._getGroups().map((group, index) => {
           return this._groupView(group, index);
         })}
@@ -79,11 +80,22 @@ class SettingsList extends React.Component {
   }
 
   _groupView(group, index){
+    let items;
+    if (group.items.length > 0) {
+      items = (
+        <View style={{borderTopWidth:1, borderBottomWidth:1, borderColor: this.props.borderColor}}>
+          {group.items.map((item, index) => {
+            return this._itemView(item,index, group.items.length);
+          })}
+        </View>
+      );
+    }
+
     if(group.header){
       return (
         <View key={'group_' + index}>
           {group.other}
-          <Text style={[{margin:5},group.header.headerStyle]} numberOfLines={1} ellipsizeMode="tail">{group.header.headerText}</Text>
+          <Text style={[{margin:5},group.header.headerStyle]} numberOfLines={group.header.headerNumberOfLines} ellipsizeMode="tail" ref={group.header.headerRef}>{group.header.headerText}</Text>
           <View style={{borderTopWidth:1, borderBottomWidth:1, borderColor: this.props.borderColor}}>
             {group.items.map((item, index) => {
               return this._itemView(item,index, group.items.length);
@@ -95,11 +107,7 @@ class SettingsList extends React.Component {
       return (
         <View key={'group_' + index}>
           {group.other}
-          <View style={{borderTopWidth:1, borderBottomWidth:1, borderColor: this.props.borderColor}}>
-            {group.items.map((item, index) => {
-              return this._itemView(item,index, group.items.length);
-            })}
-          </View>
+          {items}
         </View>
       )
     }
@@ -119,7 +127,7 @@ class SettingsList extends React.Component {
         item.isEditable ?
         <TextInput
               key={item.id}
-              style={item.editableTextStyle ? item.editableTextStyle : item.editableText}
+              style={item.editableTextStyle ? item.editableTextStyle : styles.editableText}
               placeholder = {item.placeholder}
               onChangeText={(text) => item.onTextChange(text)}
               value={item.value} />
@@ -264,8 +272,15 @@ const styles = StyleSheet.create({
  */
 SettingsList.Header = React.createClass({
   propTypes: {
-    headerText: React.PropTypes.string,
+    headerText: PropTypes.string,
     headerStyle: Text.propTypes.style,
+    headerRef: React.PropTypes.func,
+    headerNumberOfLines: React.PropTypes.number,
+  },
+  getDefaultProps() {
+    return {
+      headerNumberOfLines: 1,
+    };
   },
   /**
    * not directly rendered
@@ -283,12 +298,12 @@ SettingsList.Item = React.createClass({
     /**
      * Title being displayed
      */
-    title: React.PropTypes.string,
+    title: PropTypes.string,
     titleStyle: Text.propTypes.style,
     /**
      * Icon displayed on the left of the settings item
      */
-    icon: React.PropTypes.node,
+    icon: PropTypes.node,
 
     /**
      * Item Box Style
@@ -310,68 +325,70 @@ SettingsList.Item = React.createClass({
     /**
      * Individual item width.  Can be globally set in the parent.  Will become deprecated
      */
-    itemWidth: React.PropTypes.number,
+    itemWidth: PropTypes.number,
     /**
      * Allows for the item to become an auth item
      */
-    isAuth: React.PropTypes.bool,
-    authPropsUser: React.PropTypes.object,
-    authPropsPW: React.PropTypes.object,
+    isAuth: PropTypes.bool,
+    authPropsUser: PropTypes.object,
+    authPropsPW: PropTypes.object,
     /**
      * Individual background color. Can be globally set in the parent. Will become Deprecated
      */
-    backgroundColor: React.PropTypes.string,
+    backgroundColor: PropTypes.string,
 
     /**
      * Individual underlay click color.  Can be globally set in the parent.
      */
-    underlayColor: React.PropTypes.string,
+    underlayColor: PropTypes.string,
     /**
      * Item on press callback.
      */
-    onPress: React.PropTypes.func,
+    onPress: PropTypes.func,
     /**
      * Item on long press callback.
      */
-    onLongPress: React.PropTypes.func,
+    onLongPress: PropTypes.func,
     /**
      * Enable or disable the > arrow at the end of the setting item.
      */
-    hasNavArrow: React.PropTypes.bool,
-    arrowIcon: React.PropTypes.node,
+    hasNavArrow: PropTypes.bool,
+    arrowIcon: PropTypes.node,
 
     arrowStyle: Image.propTypes.style,
     /**
      * Enable or disable a Switch component
      */
-    hasSwitch: React.PropTypes.bool,
+    hasSwitch: PropTypes.bool,
     /**
      * Switch state
      */
-    switchState: React.PropTypes.bool,
+    switchState: PropTypes.bool,
     /**
      * Switch props
      */
-    switchProps: React.PropTypes.object,
+    switchProps: PropTypes.object,
     /**
      * On value change callback
      */
-    switchOnValueChange: React.PropTypes.func,
+    switchOnValueChange: PropTypes.func,
     /**
      * Right side information on the setting item
      */
-    titleInfo: React.PropTypes.string,
+    titleInfo: PropTypes.string,
     titleInfoStyle: Text.propTypes.style,
     /**
      * If 'Bottom', info is placed beneath the title
      */
-    titleInfoPosition: React.PropTypes.string,
+    titleInfoPosition: PropTypes.string,
     /**
      * Right side content
      */
-    rightSideContent: React.PropTypes.node,
+    rightSideContent: PropTypes.node,
     /* Gives opens to hide specific borders */
-    borderHide: React.PropTypes.oneOf(['Top', 'Bottom', 'Both'])
+    borderHide: PropTypes.oneOf(['Top', 'Bottom', 'Both']),
+
+    itemRef: React.PropTypes.func,
   },
   getDefaultProps(){
     return {
