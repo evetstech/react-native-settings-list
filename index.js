@@ -84,11 +84,15 @@ class SettingsList extends React.Component {
       return (
         <View key={'group_' + index}>
           <Text style={[{margin:5},group.header.headerStyle]} numberOfLines={group.header.headerNumberOfLines} ellipsizeMode="tail" ref={group.header.headerRef}>{group.header.headerText}</Text>
-          <View style={{borderTopWidth:1, borderBottomWidth:1, borderColor: this.props.borderColor}}>
-            {group.items.map((item, index) => {
-              return this._itemView(item,index, group.items.length);
-            })}
-          </View>
+          {
+            group.items.length ? (
+              <View style={{borderTopWidth:1, borderBottomWidth:1, borderColor: this.props.borderColor}}>
+                {group.items.map((item, index) => {
+                  return this._itemView(item,index, group.items.length);
+                })}
+              </View>
+            ) : null
+          }
         </View>
       )
     } else {
