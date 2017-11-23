@@ -66,6 +66,7 @@ The following props are used:
 | defaultItemSize   | Sets default width for all children            | React.PropTypes.number |
 | underlayColor     | Sets default underlayColor for all children    | React.PropTypes.string |
 | defaultTitleStyle | Sets default style for all children's titles   | React.PropTypes.string |
+| defaultAllowFontScaling | Sets default allow font scaling for all children   | React.PropTypes.bool |
 
 ### <a name='slh'>\<SettingsList.Header></a>
 The following props are used:
@@ -74,6 +75,7 @@ The following props are used:
 |-------------|-----------------------------------------|------------------------|
 | headerText  | Text for the header                     | React.PropTypes.string |
 | headerStyle | Sets border color for the settings list | Text.propTypes.style   |
+| allowFontScaling | Sets  allow font scaling | React.PropTypes.bool |
 | headerRef   | Sets a `ref` on the header component    | React.PropTypes.func   |
 
 ### <a name='sli'>\<SettingsList.Item></a>
@@ -99,7 +101,9 @@ The following props are used:
 | isAuth              | Sets item as an authorization item                                                                       | React.PropTypes.bool   |
 | authPropsUser       | Changes the props for the first TextInput component; overwrites default                                  | React.PropTypes.node   |
 | authPropsPW         | Changes the props for the second TextInput component; overwrites default                                 | React.PropTypes.node   |
+| allowFontScaling | Sets  allow font scaling | React.PropTypes.bool |
 | itemRef             | Sets a `ref` on the TouchableHighlight that SettingsList.Item renders to                                 | React.PropTypes.func   |
+
 
 ###### <a href='#top'>Top</a>
 

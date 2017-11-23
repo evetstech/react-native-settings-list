@@ -27,49 +27,51 @@ class SettingsList extends React.Component {
     defaultTitleStyle: Text.propTypes.style,
     defaultTitleInfoPosition: PropTypes.string,
     scrollViewProps: PropTypes.object,
+    defaultAllowFontScaling: PropTypes.bool
   };
 
-  static defaultProps ={
+  static defaultProps = {
     backgroundColor: 'white',
     borderColor: 'black',
     defaultItemSize: 50,
     underlayColor: 'transparent',
-    defaultTitleStyle: {fontSize: 16}
+    defaultTitleStyle: { fontSize: 16 },
+    defaultAllowFontScaling: true
   };
 
-  _getGroups(){
+  _getGroups() {
     var groupNumber = -1;
     let headers = [];
     let itemGroup = [];
     let result = [];
     React.Children.forEach(this.props.children, (child) => {
       // Allow for null, optional fields
-      if(!child) return;
+      if (!child) return;
 
-      if(child.type.displayName === 'Header'){
-        if(groupNumber != -1){
-          result[groupNumber] = {items: itemGroup, header: headers[groupNumber] };
+      if (child.type.displayName === 'Header') {
+        if (groupNumber != -1) {
+          result[groupNumber] = { items: itemGroup, header: headers[groupNumber] };
           itemGroup = [];
         }
         groupNumber++;
         headers[groupNumber] = child.props;
-      } else if(child.type.displayName === 'Item'){
-        if(groupNumber == -1){
+      } else if (child.type.displayName === 'Item') {
+        if (groupNumber == -1) {
           groupNumber++;
         }
         itemGroup.push(child.props);
       } else {
-        if(groupNumber == -1){
+        if (groupNumber == -1) {
           groupNumber++;
         }
         itemGroup.push(child);
       }
     });
-    result[groupNumber] = {items: itemGroup, header: headers[groupNumber] };
+    result[groupNumber] = { items: itemGroup, header: headers[groupNumber] };
     return result;
   }
 
-  render(){
+  render() {
     return (
       <ScrollView {...this.props.scrollViewProps} ref="_scrollView">
         {this._getGroups().map((group, index) => {
@@ -79,14 +81,16 @@ class SettingsList extends React.Component {
     )
   }
 
-  _groupView(group, index){
-    if(group.header){
+  _groupView(group, index) {
+    if (group.header) {
+
+      let allowFontScaling = group.header.allowFontScaling != null ? group.header.allowFontScaling : this.props.defaultAllowFontScaling;
       return (
         <View key={'group_' + index}>
-          <Text style={[{margin:5},group.header.headerStyle]} numberOfLines={group.header.headerNumberOfLines} ellipsizeMode="tail" ref={group.header.headerRef}>{group.header.headerText}</Text>
-          <View style={{borderTopWidth:1, borderBottomWidth:1, borderColor: this.props.borderColor}}>
+          <Text style={[{ margin: 5 }, group.header.headerStyle]} allowFontScaling={allowFontScaling} numberOfLines={group.header.headerNumberOfLines} ellipsizeMode="tail" ref={group.header.headerRef}>{group.header.headerText}</Text>
+          <View style={{ borderTopWidth: 1, borderBottomWidth: 1, borderColor: this.props.borderColor }}>
             {group.items.map((item, index) => {
-              return this._itemView(item,index, group.items.length);
+              return this._itemView(item, index, group.items.length);
             })}
           </View>
         </View>
@@ -95,9 +99,9 @@ class SettingsList extends React.Component {
       let items;
       if (group.items.length > 0) {
         items = (
-          <View style={{borderTopWidth:1, borderBottomWidth:1, borderColor: this.props.borderColor}}>
+          <View style={{ borderTopWidth: 1, borderBottomWidth: 1, borderColor: this.props.borderColor }}>
             {group.items.map((item, index) => {
-              return this._itemView(item,index, group.items.length);
+              return this._itemView(item, index, group.items.length);
             })}
           </View>
         );
@@ -114,129 +118,136 @@ class SettingsList extends React.Component {
   _itemEditableBlock(item, index, position) {
 
     return ([
-        <Text
-            key={'itemTitle_' + index}
-            style={[
-              item.titleStyle ? item.titleStyle : this.props.defaultTitleStyle,
-              position === 'Bottom' ? null : styles.titleText
-            ]}>
-            {item.title}
-        </Text>,
-        item.isEditable ?
+      <Text
+        key={'itemTitle_' + index}
+        style={[
+          item.titleStyle ? item.titleStyle : this.props.defaultTitleStyle,
+          position === 'Bottom' ? null : styles.titleText
+        ]}>
+        {item.title}
+      </Text>,
+      item.isEditable ?
         <TextInput
-              key={item.id}
-              style={item.editableTextStyle ? item.editableTextStyle : styles.editableText}
-              placeholder = {item.placeholder}
-              onChangeText={(text) => item.onTextChange(text)}
-              value={item.value} />
+          key={item.id}
+          style={item.editableTextStyle ? item.editableTextStyle : styles.editableText}
+          placeholder={item.placeholder}
+          onChangeText={(text) => item.onTextChange(text)}
+          value={item.value} />
         : null
     ])
   }
 
   _itemTitleBlock(item, index, position) {
+    let allowFontScaling = item.allowFontScaling != null ? item.allowFontScaling : this.props.defaultAllowFontScaling;
+
     return ([
       <Text
-          key={'itemTitle_' + index}
-          style={[
-            item.titleStyle ? item.titleStyle : this.props.defaultTitleStyle,
-            position === 'Bottom' ? null : styles.titleText
-          ]}>
-          {item.title}
+        key={'itemTitle_' + index}
+        style={[
+          item.titleStyle ? item.titleStyle : this.props.defaultTitleStyle,
+          position === 'Bottom' ? null : styles.titleText
+        ]}
+        allowFontScaling={allowFontScaling}>
+        {item.title}
       </Text>,
       item.titleInfo ?
         <Text
-            key={'itemTitleInfo_' + index}
-            style={[
-              item.rightSideStyle ? item.rightSideStyle
+          key={'itemTitleInfo_' + index}
+          style={[
+            item.rightSideStyle ? item.rightSideStyle
               :
-                position === 'Bottom' ? null : styles.rightSide,
-                {color: '#B1B1B1'},
-              item.titleInfoStyle
-            ]}>
-            {item.titleInfo}
+              position === 'Bottom' ? null : styles.rightSide,
+            { color: '#B1B1B1' },
+            item.titleInfoStyle
+          ]}
+          allowFontScaling={allowFontScaling}>
+          {item.titleInfo}
         </Text>
         : null
     ])
   }
 
-  _itemView(item, index, max){
+  _itemView(item, index, max) {
     var border;
 
     if (item.type && item.type.displayName) {
-        return item;
+      return item;
     }
 
-    if(item.borderHide) {
-      switch(item.borderHide) {
-        case 'Top' : border = {borderBottomWidth:1, borderColor: this.props.borderColor}; break;
-        case 'Bottom' : border = {borderTopWidth:1, borderColor: this.props.borderColor}; break;
+    if (item.borderHide) {
+      switch (item.borderHide) {
+        case 'Top': border = { borderBottomWidth: 1, borderColor: this.props.borderColor }; break;
+        case 'Bottom': border = { borderTopWidth: 1, borderColor: this.props.borderColor }; break;
       }
     } else {
-      border = index === max-1 ? {borderWidth:0} : {borderBottomWidth:1, borderColor: this.props.borderColor};
+      border = index === max - 1 ? { borderWidth: 0 } : { borderBottomWidth: 1, borderColor: this.props.borderColor };
     }
 
     let titleInfoPosition = item.titleInfoPosition ? item.titleInfoPosition : this.props.defaultTitleInfoPosition;
+    let allowFontScaling = item.allowFontScaling != null ? item.allowFontScaling : this.props.defaultAllowFontScaling;
 
     return (
       <TouchableHighlight accessible={false} key={'item_' + index} underlayColor={item.underlayColor ? item.underlayColor : this.props.underlayColor} onPress={item.onPress} onLongPress={item.onLongPress} ref={item.itemRef}>
-        <View style={item.itemBoxStyle ? item.itemBoxStyle : [styles.itemBox, {backgroundColor: item.backgroundColor ? item.backgroundColor : this.props.backgroundColor}]}>
+        <View style={item.itemBoxStyle ? item.itemBoxStyle : [styles.itemBox, { backgroundColor: item.backgroundColor ? item.backgroundColor : this.props.backgroundColor }]}>
           {item.icon}
           {item.isAuth ?
             <View style={item.titleBoxStyle ? item.titleBoxStyle : [styles.titleBox, border]}>
-              <View style={{paddingLeft:5,flexDirection:'column',flex:1}}>
-                <View style={{borderBottomWidth:1,borderColor:this.props.borderColor}}>
+              <View style={{ paddingLeft: 5, flexDirection: 'column', flex: 1 }}>
+                <View style={{ borderBottomWidth: 1, borderColor: this.props.borderColor }}>
                   <TextInput
                     ref="UserNameInputBlock"
                     onSubmitEditing={() => this.refs.PasswordInputBlock.focus()}
-                    style={{flex:1,height:30, borderBottomWidth:1}}
-                    placeholder = "username"
+                    style={{ flex: 1, height: 30, borderBottomWidth: 1 }}
+                    placeholder="username"
+                    allowFontScaling={allowFontScaling}
                     {...item.authPropsUser}
                   />
                 </View>
                 <View>
                   <TextInput
                     ref="PasswordInputBlock"
-                    style={{flex:1,height:30}}
-                    placeholder = "password"
+                    style={{ flex: 1, height: 30 }}
+                    placeholder="password"
                     secureTextEntry={true}
                     returnKeyType={'go'}
+                    allowFontScaling={allowFontScaling}
                     {...item.authPropsPW}
                     onSubmitEditing={() => item.onPress()}
                   />
                 </View>
               </View>
             </View>
-          :
-          <View style={item.titleBoxStyle ? item.titleBoxStyle : [styles.titleBox, border, {minHeight:item.itemWidth ? item.itemWidth : this.props.defaultItemSize}]}>
-            {titleInfoPosition === 'Bottom' ?
-                <View style={{flexDirection:'column',flex:1,justifyContent:'center'}}>
-                    {item.isEditable ? this._itemEditableBlock(item, inde, 'Bottom') : this._itemTitleBlock(item, index, 'Bottom')}
+            :
+            <View style={item.titleBoxStyle ? item.titleBoxStyle : [styles.titleBox, border, { minHeight: item.itemWidth ? item.itemWidth : this.props.defaultItemSize }]}>
+              {titleInfoPosition === 'Bottom' ?
+                <View style={{ flexDirection: 'column', flex: 1, justifyContent: 'center' }}>
+                  {item.isEditable ? this._itemEditableBlock(item, inde, 'Bottom') : this._itemTitleBlock(item, index, 'Bottom')}
                 </View>
-              : item.isEditable ? this._itemEditableBlock(item, index) : this._itemTitleBlock(item, index)}
+                : item.isEditable ? this._itemEditableBlock(item, index) : this._itemTitleBlock(item, index)}
 
-            {item.rightSideContent ? item.rightSideContent : null}
-            {item.hasSwitch ?
-              <Switch
-                {...item.switchProps}
-                style={styles.rightSide}
-                onValueChange={(value) => item.switchOnValueChange(value)}
-                value={item.switchState}/>
+              {item.rightSideContent ? item.rightSideContent : null}
+              {item.hasSwitch ?
+                <Switch
+                  {...item.switchProps}
+                  style={styles.rightSide}
+                  onValueChange={(value) => item.switchOnValueChange(value)}
+                  value={item.switchState} />
                 : null}
-            {this.itemArrowIcon(item)}
-          </View>
-        }
+              {this.itemArrowIcon(item)}
+            </View>
+          }
         </View>
       </TouchableHighlight>
     )
   }
 
   itemArrowIcon(item) {
-    if(item.arrowIcon) {
-        return item.arrowIcon;
+    if (item.arrowIcon) {
+      return item.arrowIcon;
     }
 
-    if(item.hasNavArrow){
-        return <Image style={[styles.rightSide, item.arrowStyle]} source={ARROW_ICON} />;
+    if (item.hasNavArrow) {
+      return <Image style={[styles.rightSide, item.arrowStyle]} source={ARROW_ICON} />;
     }
 
     return null;
@@ -246,22 +257,22 @@ module.exports = SettingsList;
 
 const styles = StyleSheet.create({
   itemBox: {
-    flex:1,
-    justifyContent:'center',
-    flexDirection:'row'
+    flex: 1,
+    justifyContent: 'center',
+    flexDirection: 'row'
   },
   titleBox: {
-    flex:1,
-    marginLeft:15,
-    flexDirection:'row'
+    flex: 1,
+    marginLeft: 15,
+    flexDirection: 'row'
   },
   titleText: {
-    flex:1,
-    alignSelf:'center'
+    flex: 1,
+    alignSelf: 'center'
   },
   rightSide: {
-    marginRight:15,
-    alignSelf:'center'
+    marginRight: 15,
+    alignSelf: 'center'
   },
   editableText: {
     flex: 1,
@@ -288,7 +299,7 @@ SettingsList.Header = createReactClass({
   /**
    * not directly rendered
    */
-  render(){
+  render() {
     return null;
   }
 });
@@ -311,7 +322,7 @@ SettingsList.Item = createReactClass({
     /**
      * Item Box Style
      */
-    itemBoxStyle : ViewPropTypes.style,
+    itemBoxStyle: ViewPropTypes.style,
     /**
      * Title Box Style
      */
@@ -393,7 +404,7 @@ SettingsList.Item = createReactClass({
 
     itemRef: PropTypes.func,
   },
-  getDefaultProps(){
+  getDefaultProps() {
     return {
       hasNavArrow: true
     }
@@ -401,7 +412,7 @@ SettingsList.Item = createReactClass({
   /**
    * not directly rendered
    */
-  render(){
+  render() {
     return null;
   },
 });
