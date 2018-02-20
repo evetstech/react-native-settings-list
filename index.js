@@ -182,7 +182,7 @@ class SettingsList extends React.Component {
         <View style={item.itemBoxStyle ? item.itemBoxStyle : [styles.itemBox, {backgroundColor: item.backgroundColor ? item.backgroundColor : this.props.backgroundColor}]}>
           {item.icon}
           {item.isAuth ?
-            <View style={item.titleBoxStyle ? item.titleBoxStyle : [styles.titleBox, border]}>
+            <View style={[styles.titleBox, border, (item.titleBoxStyle || {})]}>
               <View style={{paddingLeft:5,flexDirection:'column',flex:1}}>
                 <View style={{borderBottomWidth:1,borderColor:this.props.borderColor}}>
                   <TextInput
@@ -207,7 +207,7 @@ class SettingsList extends React.Component {
               </View>
             </View>
           :
-          <View style={item.titleBoxStyle ? item.titleBoxStyle : [styles.titleBox, border, {minHeight:item.itemWidth ? item.itemWidth : this.props.defaultItemSize}]}>
+          <View style={[styles.titleBox, border, {minHeight:item.itemWidth ? item.itemWidth : this.props.defaultItemSize}, item.titleBoxStyle || {}) ]}>
             {titleInfoPosition === 'Bottom' ?
                 <View style={{flexDirection:'column',flex:1,justifyContent:'center'}}>
                     {item.isEditable ? this._itemEditableBlock(item, inde, 'Bottom') : this._itemTitleBlock(item, index, 'Bottom')}
