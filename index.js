@@ -128,7 +128,8 @@ class SettingsList extends React.Component {
               style={item.editableTextStyle ? item.editableTextStyle : styles.editableText}
               placeholder = {item.placeholder}
               onChangeText={(text) => item.onTextChange(text)}
-              value={item.value} />
+              value={item.value}
+              {...item.textInputProps} />
         : null
     ])
   }
@@ -210,7 +211,7 @@ class SettingsList extends React.Component {
           <View style={item.titleBoxStyle ? item.titleBoxStyle : [styles.titleBox, border, {minHeight:item.itemWidth ? item.itemWidth : this.props.defaultItemSize}]}>
             {titleInfoPosition === 'Bottom' ?
                 <View style={{flexDirection:'column',flex:1,justifyContent:'center'}}>
-                    {item.isEditable ? this._itemEditableBlock(item, inde, 'Bottom') : this._itemTitleBlock(item, index, 'Bottom')}
+                    {item.isEditable ? this._itemEditableBlock(item, index, 'Bottom') : this._itemTitleBlock(item, index, 'Bottom')}
                 </View>
               : item.isEditable ? this._itemEditableBlock(item, index) : this._itemTitleBlock(item, index)}
 
