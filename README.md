@@ -38,6 +38,7 @@ import SettingsList from 'react-native-settings-list';
 ###### <a href='#top'>Top</a>
 
 ## <a name='#new'>New changes/additions</a>
+* Added `textInputProps` passed to \<SettingsList.Item> to set other options such as `secureEntry` or `autoCapitalize`
 * Ability for an authorization-type component [example updated to show a practical use]
  * Allows for complete customization of the TextInput by passing into the two props authPropsUser and authPassPW (overwrites defaults
  * Uses existing onPress prop for callback
@@ -100,6 +101,7 @@ The following props are used:
 | authPropsUser       | Changes the props for the first TextInput component; overwrites default                                  | React.PropTypes.node   |
 | authPropsPW         | Changes the props for the second TextInput component; overwrites default                                 | React.PropTypes.node   |
 | itemRef             | Sets a `ref` on the TouchableHighlight that SettingsList.Item renders to                                 | React.PropTypes.func   |
+| textInputProps      | RN text input props                                                                                      | React.PropTypes.object |
 
 ###### <a href='#top'>Top</a>
 
